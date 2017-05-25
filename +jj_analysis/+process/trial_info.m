@@ -17,9 +17,16 @@ data = data.DATA;
 data_fields = { 'trial_number', 'block_number', 'trial_type' ...
   , 'selected_cue', 'shown_reward_cue', 'reward_type', 'reward_size' ...
   , 'info_location', 'random_location', 'errors' };
+meta_fields = { 'monkey', 'date', 'session', 'notes' };
+
 assert__are_fields( data, data_fields );
 
-meta_fields = fieldnames( meta );
+%   handle empty meta fields for older data
+for i = 1:numel( meta_fields )
+  if ( ~isfield(meta, meta_fields{i}) )
+    meta.(meta_fields{i}) = sprintf( '%s__', meta_fields{i} );
+  end
+end
 
 cont = Container();
 
