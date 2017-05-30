@@ -16,6 +16,9 @@ choice = choice.do( {'date', 'block'}, @percentages, 'selected_cue' );
 
 [valid, errs] = jj_analysis.process.exclude_n_plus_one_errors( cont );
 
+valid = valid.only( 'trial_type__choice' );
+
+choice = valid.do( {'date', 'block'}, @percentages, 'selected_cue' );
 %%  plot preference over days
 
 pl.default();
@@ -32,7 +35,7 @@ pl.y_lim = [0 100];
 pl.order_by = arrayfun( @(x) ['block__', num2str(x)], 1:n_blocks, 'un', false );
 
 dates = choice('date');
-one_session = choice.only( dates{10} );
+one_session = choice.only( dates{end-3} );
 
 pl.plot_by( one_session, 'block', 'selected_cue', 'date' );
 

@@ -5,7 +5,7 @@ function create()
 opts = struct();
 
 % - PATHS - %
-PATHS.raw_data = '/Volumes/My Passport/NICK/Chang Lab 2016/jessica/jj_analysis/raw_data';
+PATHS.raw_data = 'C:\Users\Jessica\Desktop\infoData\mat';
 PATHS.processed_data = '/Volumes/My Passport/NICK/Chang Lab 2016/jessica/jj_analysis/processed_data';
 
 opts.PATHS = PATHS;
