@@ -5,6 +5,8 @@ cont = jj_analysis.io.get_trial_info( pathstr );
 
 pl = ContainerPlotter();
 
+
+
 %%  get preference over days
 
 valid = cont.only( 'no_errors' );
@@ -43,9 +45,21 @@ pl.plot_by( one_session, 'block', 'selected_cue', 'date' );
 
 err_rate = cont.only( 'trial_type__choice' );
 err_rate = err_rate.rm( {'broke_fix'} );
-err_rate = err_rate.do( {'date', 'block', 'selected_cue'}, @percentages, 'errors' );
+err_types = err_rate( 'errors' );
+% err_rate = err_rate.do( {'date', 'selected_cue'}, @percentages, 'errors', err_types );
+ err_rate = err_rate.do( {'date', 'block', 'selected_cue'}, @percentages, 'errors', err_types );
+
+ days = err_rate( 'date' );
+
+% err_rate = err_rate.only( days{3} );
+
+n_blocks = numel( err_rate('block') );
 
 pl.default();
-pl.y_lim = [0 100];
+pl.y_lim = [];
+ pl.order_by = arrayfun( @(x) ['block__', num2str(x)], 1:n_blocks, 'un', false );
 
-pl.plot_by( err_rate, 'date', 'selected_cue', 'errors' );
+%  pl.plot_by( err_rate, 'block', 'errors', [] );
+
+% pl.plot_by( err_rate, 'date', 'selected_cue', 'errors' ); %by days
+pl.plot_by( err_rate, 'block', 'selected_cue', 'errors'); %blocks include err_rate = err_rate.only('05_31TaC'); above plotting function
