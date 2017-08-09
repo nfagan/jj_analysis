@@ -62,6 +62,7 @@ dur_col_ind =     strcmp( key, 'duration' );
 if ( all(isnan(trials)) )
   evts = when;
   evts.data = nan( shape(evts, 1), size(event, 2) );
+  fprintf( '\n %s Done.', strjoin(ids, '_') );
   return;
 end
 

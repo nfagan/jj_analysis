@@ -26,6 +26,9 @@ assertions.assert__valid_path( src );
 assertions.assert__valid_path( dest );
 assertions.assert__is_cellstr( files );
 
+assert( ~isempty(which('Edf2Mat')), ['No Edf2Mat function was found.' ...
+  , ' Locate it and add it to the path.'] );
+
 edfs = general.dirstruct( src, '.edf' );
 
 assert( numel(edfs) > 0, 'No .edf files were found in ''%s''.', src );

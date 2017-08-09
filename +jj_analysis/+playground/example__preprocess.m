@@ -28,10 +28,11 @@ edfs = get_edfs( processed_edf );
 
 eyelink_starts = get_trial_starts( edfs );
 [fix_events, fix_evt_key] = get_fix_events( edfs );
-no_trial_start = eyelink_starts.where( 'trial_start__false' );
-all_el_ids = eyelink_starts( 'identifier', : );
-no_trial_start_ids = unique( all_el_ids(no_trial_start) );
-has_trial_start_ids = unique( all_el_ids(~no_trial_start) );
+
+no_trial_start =        eyelink_starts.where( 'trial_start__false' );
+all_el_ids =            eyelink_starts( 'identifier', : );
+no_trial_start_ids =    unique( all_el_ids(no_trial_start) );
+has_trial_start_ids =   unique( all_el_ids(~no_trial_start) );
 
 %%  convert matlab time -> eyelink time
 
