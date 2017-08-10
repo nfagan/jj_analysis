@@ -10,14 +10,21 @@ conf = jj_analysis.config.load();
 raw_edf = conf.PATHS.raw_edf;
 processed_edf = conf.PATHS.processed_edf;
 raw_mat = conf.PATHS.raw_data;
+processed_mat = conf.PATHS.processed_data;
 
 %%  edf -> mat
 
 edf_to_mat( raw_edf, processed_edf );
+raw_to_processed_mat( raw_mat, processed_mat, 'processed.mat' );
 
 %%  load task data
 
-[task_events, task_evt_key] = get_trial_info( raw_mat );
+load( fullfile(processed_mat, 'processed.mat') );
+load( fullfile(processed_mat, 'key.mat') );
+
+task_evt_key = key;
+task_events = processed;
+
 task_events = identify_correction_trials( task_events );
 
 %%  load processed edfs saved as .mat
@@ -58,7 +65,7 @@ trials = get_start_stop_events( aligned, 'display_social_image', 'reward', task_
 
 %%  get fix events for each trial
 
-per_trial_events = get_fix_events_per_trial( trials, fix_events, fix_evt_key );
+pt_events = get_fix_events_per_trial( trials, fix_events, fix_evt_key );
 
 %%  optionally get samples (takes a long time)
 
@@ -80,7 +87,7 @@ rt = get_reaction_time( trials, edfs, vel_thresh );
 img_rect = get_centered_rect( 400, 1200, 900 ); % img_size, width, height
 roi_name = 'image';
 
-[evts, inbounds] = get_fix_events_in_bounds( per_trial_events, fix_evt_key, img_rect );
+[evts, inbounds] = get_fix_events_in_bounds( pt_events, fix_evt_key, img_rect );
 
 evts = evts.require_fields( 'rois' );
 evts( 'rois' ) = roi_name;
@@ -89,8 +96,8 @@ evts( 'rois' ) = roi_name;
 
 [eye_roi, mouth_roi] = get_eye_mouth_rois( img_rect );
 
-[mouth_evts, mouth_inbounds] = get_fix_events_in_bounds( per_trial_events, fix_evt_key, mouth_roi);
-[eye_evts, eye_inbounds] = get_fix_events_in_bounds( per_trial_events, fix_evt_key, eye_roi);
+[mouth_evts, mouth_inbounds] = get_fix_events_in_bounds( pt_events, fix_evt_key, mouth_roi);
+[eye_evts, eye_inbounds] = get_fix_events_in_bounds( pt_events, fix_evt_key, eye_roi);
 
 eye_evts = eye_evts.require_fields( 'rois' );
 eye_evts( 'rois' ) = 'eyes';

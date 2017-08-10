@@ -14,7 +14,7 @@ durations = durations.rm( no_trial_start_ids );
 
 %%  proportion looked vs. no look
 
-durations = per_trial_events;
+durations = pt_events;
 durations = durations.require_fields( 'did_look' );
 durations( 'did_look', inbounds ) = 'did_look__true';
 durations( 'did_look', ~inbounds ) = 'did_look__false';

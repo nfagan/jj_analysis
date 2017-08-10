@@ -1,10 +1,12 @@
-function [cont, event_key] = get_trial_info( path )
+function [cont, event_key] = get_trial_info( path, mats )
 
 %   GET_TRIAL_INFO -- Get all trial info from the data files in the given
 %     folder.
 %
 %     IN:
 %       - `path` (char)
+%       - `mats` (cell array of strings, char) |OPTIONAL| -- .mat files to
+%         load. Defaults to loading all .mat files in the given `path`.
 %     OUT:
 %       - `cont` (Container) -- Trial info.
 %       - `event_key` (cell array of strings) -- Ids that identify the
@@ -15,18 +17,26 @@ import jj_analysis.util.general.*;
 import jj_analysis.process.*;
 
 assert__isa( path, 'char', 'the path to the data files' );
-mats = dirstruct( path, '.mat' );
+
+if ( nargin < 2 )
+  mats = dirstruct( path, '.mat' );
+  mats = { mats(:).name };
+else
+  if ( ~iscell(mats) ), mats = { mats }; end
+  assert__is_cellstr( mats, 'the .mat files' );
+end
+
 conts = cell( 1, numel(mats) );
 keys = cell( 1, numel(mats) );
 parfor i = 1:numel(mats)
   fprintf( '\n - Processing %d of %d', i, numel(mats) );
-  mat = load( fullfile(path, mats(i).name) );
+  mat = load( fullfile(path, mats{i}) );
   F = char( fieldnames(mat) );
   mat = mat.(F);
   cont_ = trial_info( mat );
   [events, keys{i}] = trial_events( mat );
   cont_.data = events;
-  cont_ = cont_.add_field( 'identifier', get_identifier(mats(i).name) );
+  cont_ = cont_.add_field( 'identifier', get_identifier(mats{i}) );
   conts{i} = cont_;
 end
 
