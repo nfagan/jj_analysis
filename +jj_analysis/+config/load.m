@@ -14,7 +14,8 @@ function loaded = load(flag)
 
 if ( nargin == 0 )
   flag = ''; 
-else assert( strcmp(flag, '-default'), 'Unrecognized flag ''%s''', flag );
+else
+  assert( strcmp(flag, '-default'), 'Unrecognized flag ''%s''', flag );
 end
 savepath = fileparts( which('jj_analysis.config.load') );
 if ( isempty(flag) )
@@ -24,7 +25,7 @@ else
 end
 if ( exist(filename, 'file') ~= 2 )
   disp( 'Creating config files ...' );
-  hww_gng.config.create();
+  jj_analysis.config.create();
 end
 
 loaded = load( filename );

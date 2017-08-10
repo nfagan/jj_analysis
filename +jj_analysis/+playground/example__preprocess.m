@@ -1,7 +1,5 @@
 %%  get paths to mat files, raw edfs, etc.
 
-pathinit; pathadd global jj_analysis;
-
 import jj_analysis.process.*;
 import jj_analysis.io.*;
 import jj_analysis.process.bounds.*;
@@ -11,6 +9,8 @@ raw_edf = conf.PATHS.raw_edf;
 processed_edf = conf.PATHS.processed_edf;
 raw_mat = conf.PATHS.raw_data;
 processed_mat = conf.PATHS.processed_data;
+
+jj_analysis.util.paths.add_depends();
 
 %%  edf -> mat
 
