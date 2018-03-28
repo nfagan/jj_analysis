@@ -35,8 +35,9 @@ assert__isa( events, 'Container', 'the fixation events' );
 assert__is_cellstr( event_key, 'the event key' );
 assert__isa( bounds, 'double', 'the positional bounds' );
 assert__isa( bound_func, 'function_handle', 'the bounding function' );
-assert( numel(event_key) == size(events.data, 2), ['The given event key' ...
-  , ' does not properly correspond to the fixation events matrix.'] );
+
+assert( shape(events, 1) > 0 && size(events.data{1}, 2) == numel(event_key) ...
+  , 'The given event key does not properly correspond to the fixation events matrix.' );
 
 required_keys = { 'posX', 'posY' };
 
@@ -47,15 +48,26 @@ y_ind = strcmp( event_key, 'posY' );
 
 data = events.data;
 
-in_bounds = false( size(data, 1), 1 );
+evts = Container();
 
-parfor i = 1:size(data, 1)
+for i = 1:size(data, 1)
+  disp(i);
+  
   trial = data(i, :);
-  pos = [ trial(x_ind), trial(y_ind) ];
-  if ( any(isnan(pos)) ), continue; end
-  in_bounds(i) = bound_func( bounds, pos, events(i) );
+  trial = trial{1};
+  pos = [ trial(:, x_ind), trial(:, y_ind) ];
+  
+  one_trial = events(i);
+  
+  in_bounds = bound_func( bounds, pos, events(i) );
+  
+  trial = trial(in_bounds, :);
+  
+  if ( isempty(trial) )
+    continue;
+  end
+  
+  evts = append( evts, set_data(one_trial, {trial}) );
 end
-
-evts = events( in_bounds );
 
 end

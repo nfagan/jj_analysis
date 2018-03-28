@@ -44,16 +44,20 @@ N = size( data, 1 );
 
 n_subset = shape( subset, 1 );
 
+%   allow edf file to have one extra start time -- this is the start time
+%   of the trial on which the task is aborted. Otherwise, the number of
+%   start times must match exactly.
 if ( n_subset - N == 1 )
   subset = subset(1:end-1);
 else
   assert( N == n_subset, ['More than 1 (%d) trial difference between' ...
-    , ' Eyelink and Matlab time.'] );
+    , ' Eyelink and Matlab time.'], n_subset - N );
 end
 
 mat_trials = mat( 'trial', : );
 subset_trials = subset( 'trial', : );
 
+% make sure trial ids match between edf and mat
 assert( isequal(mat_trials, subset_trials), ['Task trial ids' ...
   , ' do not propertly correspond to Eyelink trial ids for ''%s''.'] ...
   , strjoin(ids, ', ') );

@@ -66,7 +66,11 @@ for i = 1:numel(data)
     labs.errors = 'broke_fix';
   elseif ( current.errors.no_fixation )
     labs.errors = 'no_fix';
+  elseif ( isfield(current.errors, 'chose_too_late') && current.errors.chose_too_late )
+    labs.errors = 'chose_late';
   else
+    assert( sum(structfun(@(x) x, current.errors)) == 0 ...
+      , 'Some error types were unaccounted for.' );
     labs.errors = 'no_errors';
   end
   

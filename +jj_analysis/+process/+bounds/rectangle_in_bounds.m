@@ -16,9 +16,9 @@ x2 = img_rect(3);
 y1 = img_rect(2);
 y2 = img_rect(4);
 
-x = pos(1);
-y = pos(2);
+x = pos(:, 1);
+y = pos(:, 2);
 
-tf = x >= x1 && x <= x2 && y >= y1 && y <= y2;
+tf = x >= x1 & x <= x2 & y >= y1 & y <= y2;
 
 end

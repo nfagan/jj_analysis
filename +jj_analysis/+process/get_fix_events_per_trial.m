@@ -36,7 +36,7 @@ required_keys = { 'start', 'end', 'duration' };
 
 assert__strings_present( key, required_keys );
 
-evts = when.parfor_each( 'identifier', @one_identifier, fevents, key );
+evts = when.for_each( 'identifier', @one_identifier, fevents, key );
 
 end
 
@@ -61,7 +61,8 @@ dur_col_ind =     strcmp( key, 'duration' );
 
 if ( all(isnan(trials)) )
   evts = when;
-  evts.data = nan( shape(evts, 1), size(event, 2) );
+%   evts.data = nan( shape(evts, 1), size(event, 2) );
+  evts.data = arrayfun( @(x) nan(1, size(event, 2)), 1:shape(evts, 1), 'un', false )';
   fprintf( '\n %s Done.', strjoin(ids, '_') );
   return;
 end
@@ -72,7 +73,7 @@ evts = Container();
 
 for i = 1:size(trials, 1)  
   evt = when(i);
-  evt.data = nan( 1, size(event, 2) );
+  evt.data = { nan( 1, size(event, 2) ) };
   
   if ( any(isnan(trials(i, :))) )
     evts = evts.append( evt );
@@ -100,8 +101,9 @@ for i = 1:size(trials, 1)
   
   labs = evt.field_label_pairs();
   
-  evt = Container( subset, labs{:} );
-  evts = evts.append( evt );  
+%   evt = Container( subset, labs{:} );
+  evt = Container( {subset}, labs{:} );
+  evts = evts.append( evt );
 end
 
 fprintf( '\n %s Done.', strjoin(ids, '_') );
