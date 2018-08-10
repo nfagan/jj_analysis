@@ -12,6 +12,10 @@ import jj_analysis.util.assertions.*;
 import jj_analysis.util.general.*;
 import jj_analysis.process.*;
 
+if ( nargin == 0 )
+  path = jj_analysis.util.paths.pathfor( 'raw_data' );
+end
+
 assert__isa( path, 'char', 'the path to the data files' );
 mats = dirstruct( path, '.mat' );
 cont = Container();

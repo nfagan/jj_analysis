@@ -2,3 +2,4 @@
 +jj_analysis/+config/default.mat
 *.m~
 *.asv
+data/

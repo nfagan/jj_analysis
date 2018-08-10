@@ -52,6 +52,14 @@ for i = 1:numel(data)
   end
   labs.selected_location = [ 'selected_location__' selected_location ];
   
+  if ( isfield(current, 'block_sequence_id') )
+    block_sequence = current.block_sequence_id;
+  else
+    block_sequence = [];
+  end
+  
+  labs.block_sequence = [ 'block_sequence__' num2str(block_sequence) ];
+  
   if ( current.errors.broke_choice )
     labs.errors = 'broke_choice';
   elseif ( current.errors.no_choice )

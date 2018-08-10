@@ -12,7 +12,9 @@ pl = ContainerPlotter();
 valid = cont.only( 'no_errors' );
 choice = valid.only( 'trial_type__choice' );
 %   calculate the percentage of each selected_cue, within day + block
-choice = choice.do( {'date', 'block'}, @percentages, 'selected_cue' );
+choice = choice.collapse( 'block' );
+choice = choice.for_each( {'date', 'block'}, @percentages, 'selected_cue', choice('selected_cue') );
+choice.plot_by( 'date', 'selected_cue' );
 
 %%  only no correction trials
 
