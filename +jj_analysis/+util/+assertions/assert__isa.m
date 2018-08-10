@@ -9,7 +9,7 @@ function assert__isa(var, kind, var_name)
 %         descriptive name for the variable in case the assertion
 %         fails.
 
-if ( nargin < 4 ), var_name = 'input'; end;
+if ( nargin < 3 ), var_name = 'input'; end
 assert( isa(var, kind), 'Expected %s to be a ''%s''; was a ''%s''.' ...
   , var_name, kind, class(var) );
 end

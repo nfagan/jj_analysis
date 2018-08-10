@@ -1,4 +1,4 @@
-function cont = trial_info( data )
+function cont = trial_info( all_data )
 
 %   TRIAL_INFO -- Extract basic trial info from a data file.
 %
@@ -8,11 +8,11 @@ function cont = trial_info( data )
 %       - `cont` (Container) -- Container object.
 
 import jj_analysis.util.assertions.*;
-assert__isa( data, 'struct', 'the saved-data' );
-assert__are_fields( data, {'META', 'DATA'} );
+assert__isa( all_data, 'struct', 'the saved-data' );
+assert__are_fields( all_data, {'META', 'DATA'} );
 
-meta = data.META;
-data = data.DATA;
+meta = all_data.META;
+data = all_data.DATA;
 
 data_fields = { 'trial_number', 'block_number', 'trial_type' ...
   , 'selected_cue', 'shown_reward_cue', 'reward_type', 'reward_size' ...
@@ -52,13 +52,11 @@ for i = 1:numel(data)
   end
   labs.selected_location = [ 'selected_location__' selected_location ];
   
-  if ( isfield(current, 'block_sequence_id') )
-    block_sequence = current.block_sequence_id;
+  if ( ~isfield(current, 'shown_social_image') )
+    labs.shown_social_image = 'social_image__';
   else
-    block_sequence = [];
+    labs.shown_social_image = current.shown_social_image;
   end
-  
-  labs.block_sequence = [ 'block_sequence__' num2str(block_sequence) ];
   
   if ( current.errors.broke_choice )
     labs.errors = 'broke_choice';
@@ -68,7 +66,11 @@ for i = 1:numel(data)
     labs.errors = 'broke_fix';
   elseif ( current.errors.no_fixation )
     labs.errors = 'no_fix';
+  elseif ( isfield(current.errors, 'chose_too_late') && current.errors.chose_too_late )
+    labs.errors = 'chose_late';
   else
+    assert( sum(structfun(@(x) x, current.errors)) == 0 ...
+      , 'Some error types were unaccounted for.' );
     labs.errors = 'no_errors';
   end
   
@@ -90,6 +92,16 @@ for i = 1:numel(meta_fields)
   end
 end
 
-cont = cont.sparse();
+%   mark whether is juice or not
+
+if ( ~isfield(all_data, 'opts') || ~isfield(all_data.opts.STRUCTURE, 'IS_JUICE') )
+  task_type = 'juice';
+elseif ( all_data.opts.STRUCTURE.IS_JUICE )
+  task_type = 'juice';
+else
+  task_type = 'social';
+end
+
+cont = cont.add_field( 'task_type', task_type );
 
 end
