@@ -19,7 +19,14 @@ data_fields = { 'trial_number', 'block_number', 'trial_type' ...
   , 'info_location', 'random_location', 'errors' };
 meta_fields = { 'monkey', 'date', 'session', 'notes' };
 
-assert__are_fields( data, data_fields );
+try
+  assert__are_fields( data, data_fields );
+catch err
+  date = meta.date;
+  fprintf( '\n "%s" failed to process', date );
+  cont = Container();
+  return
+end
 
 %   handle empty meta fields for older data
 for i = 1:numel( meta_fields )

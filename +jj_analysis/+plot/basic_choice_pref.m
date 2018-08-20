@@ -25,10 +25,20 @@ valid = valid.only( 'trial_type__choice' );
 choice = valid.do( {'date', 'block'}, @percentages, 'selected_cue' );
 %%  plot preference over days
 
+figure(2);
+
+pl = ContainerPlotter();
+
 pl.default();
 pl.y_lim = [ 0 100 ];
 
-pl.plot_by( choice, 'date', 'selected_cue', [] );
+subset = choice({'monkey__Ephron'});
+dates = subset('date');
+[~, I] = sort( datenum(dates) );
+
+pl.order_by = dates(I);
+
+pl.plot_by( subset, 'date', 'selected_cue', [] );
 
 %%  plot preference within a block
 

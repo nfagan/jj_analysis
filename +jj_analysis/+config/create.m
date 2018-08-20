@@ -1,9 +1,11 @@
-function opts = create()
+function opts = create(do_save)
 
 %   CREATE -- Create the jj_analysis config file.
 %
 %     OUT:
 %       - `opts` (struct)
+
+if ( nargin < 1 ), do_save = true; end
 
 opts = struct();
 
@@ -21,7 +23,9 @@ DEPENDENCIES = { 'global' };
 opts.PATHS = PATHS;
 opts.DEPENDENCIES = DEPENDENCIES;
 
-jj_analysis.config.save( opts );
-jj_analysis.config.save( opts, '-default' );
+if ( do_save )
+  jj_analysis.config.save( opts );
+  jj_analysis.config.save( opts, '-default' );
+end
 
 end

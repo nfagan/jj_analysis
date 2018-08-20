@@ -30,6 +30,8 @@ else
   assert__is_cellstr( mats, 'the .mat files' );
 end
 
+mats = mats( cellfun(@should_include, mats) );
+
 conts = cell( 1, numel(mats) );
 keys = cell( 1, numel(mats) );
 parfor i = 1:numel(mats)
@@ -38,15 +40,23 @@ parfor i = 1:numel(mats)
   F = char( fieldnames(mat) );
   mat = mat.(F);
   cont_ = trial_info( mat );
-  [events, keys{i}] = trial_events( mat );
-  cont_.data = events;
-  cont_ = cont_.add_field( 'identifier', get_identifier(mats{i}) );
+  
+  if ( ~isempty(cont_) )
+    [events, keys{i}] = trial_events( mat );
+    cont_.data = events;
+    cont_ = cont_.add_field( 'identifier', get_identifier(mats{i}) );
+  end
+  
   conts{i} = cont_;
 end
 
 cont = extend( conts{:} );
 event_key = keys{1};
 
+end
+
+function tf = should_include(fname)
+tf = numel( fname ) > 0 && fname(1) ~= '.';
 end
 
 function id = get_identifier(fname)

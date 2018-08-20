@@ -9,6 +9,7 @@ raw_edf = conf.PATHS.raw_edf;
 processed_edf = conf.PATHS.processed_edf;
 raw_mat = conf.PATHS.raw_data;
 processed_mat = conf.PATHS.processed_data;
+plot_p = fullfile( conf.PATHS.data_dir, 'plots', datestr(now, 'mmddyy') );
 
 jj_analysis.util.paths.add_depends();
 
@@ -105,6 +106,8 @@ measures = append( pref, errs );
 %%  plot on average over days
 
 pl = ContainerPlotter();
+prefix = 'preference__average';
+output_p = fullfile( plot_p, 'preference' );
 
 pl.y_lim = [0, 1];
 pl.x_tick_rotation = 0;
@@ -113,6 +116,10 @@ f = figure(1);
 clf( f );
 
 pl.bar( measures({'preference'}), 'selected_cue', 'task_type', 'drug' );
+
+fname = fullfile( output_p, prefix );
+% shared_utils.io.require_dir( output_p );
+% shared_utils.plot.save_fig( gcf, fname, {'epsc', 'png', 'fig'}, true );
 
 %%  plot over blocks
 
@@ -166,6 +173,34 @@ pl.order_by = days;
 pl.bar( pref, 'date', 'task_type', {'drug', 'task_type'} );
 
 
+%%  plot over days
+
+output_p = fullfile( plot_p, 'preference' );
+prefix = 'preference_over_time__';
+
+measdat = measures.data;
+measlabs = fcat.from( measures.labels );
+
+mask = fcat.mask( measlabs, @find, {'preference', 'social'} );
+
+pl = plotlabeled.make_common();
+
+dates = combs( measlabs, 'date', mask );
+nums = datenum( dates );
+[~, I] = sort( nums );
+
+pl.x_order = dates(I);
+pl.y_lims = [0.3, 1];
+
+xcats = 'date';
+gcats = 'selected_cue';
+pcats = { 'measure_type', 'task_type' };
+
+spec = cshorzcat( gcats, pcats );
+
+axs = pl.errorbar( measdat(mask), measlabs(mask), xcats, gcats, pcats );
+
+dsp3.req_savefig( gcf, output_p, measlabs(mask), spec, prefix );
 
 
 
